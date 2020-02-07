@@ -21,7 +21,7 @@ CREATE TABLE `utilisateur` (
 );
 
 CREATE TABLE `localisation` (
-                                `localisationId` int,
+                                `localisationId` int PRIMARY KEY,
                                 `localisationLatitude` double,
                                 `localisationLongitude` double
 );
