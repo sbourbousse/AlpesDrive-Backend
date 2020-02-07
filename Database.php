@@ -7,7 +7,7 @@ class Database extends PDO{
 
     function __construct() {
         $this->host = "mysql-supergap.alwaysdata.net";
-        $this->database = "supergap_alpesdrive";
+        $this->database = "supergap_alpes-drive";
         $this->user = "supergap";
         $this->password = "Tiy9mcn!";
 
