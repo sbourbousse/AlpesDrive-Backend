@@ -17,7 +17,7 @@ CREATE TABLE `utilisateur` (
                                `utilisateurMotDePasse` char(32),
                                `utilisateurVerifie` bool,
                                `utilisateurCleMail` int,
-                               `dateInscription` date
+                               `utilisateurDateInscription` date
 );
 
 CREATE TABLE `localisation` (
