@@ -7,6 +7,7 @@ class User {
     private $motDePasse;
     private $verifie;
     private $cleMail;
+    private $dateInscription;
 
 
     public function __construct($email, $password) {
@@ -23,14 +24,18 @@ class User {
         //Lit le premier résultat
         $result = $sth->fetch();
 
-        if($result["utilisateurVerifie"] == true){
-            $statusCode = 1;  //L'utilisateur existe et son mail est vérifié
-        } else if ($result["utilisateurVerifie"] == false) {
-            $statusCode = 2; //L'utilisateur existe mais son mail n'est pas vérifié
+        if($result) {
+            if ($result["utilisateurVerifie"] == true) {
+                $statusCode = 1;  //L'utilisateur existe et son mail est vérifié
 
-        } else {
+            } else {
+                $statusCode = 2; //L'utilisateur existe mais son mail n'est pas vérifié
+            }
+        }
+        else {
             $statusCode = 3; //L'utilisateur n'existe pas
         }
+
 
         return $statusCode;
     }
@@ -50,6 +55,7 @@ class User {
         $this->id = time() - 999999;
         $this->verifie = 0;
         $this->cleMail = rand(1 , 2147483647);
+        $this->dateInscription = date("Y-m-d");
     }
 
     public function emailExists($db) {
@@ -79,9 +85,9 @@ class User {
     }
 
     public function addToDatabase($db) {
-        $req = "INSERT INTO utilisateur (utilisateurId, utilisateurMail, utilisateurMotDePasse, utilisateurVerifie, utilisateurcleMail) VALUES ( ".$this->id.",\"".$this->email."\",\"".md5($this->motDePasse)."\",".$this->verifie.",".$this->cleMail.")";
+        $req = "INSERT INTO utilisateur (utilisateurId, utilisateurMail, utilisateurMotDePasse, utilisateurVerifie, utilisateurcleMail, utilisateurDateInscription) VALUES ( ".$this->id.",\"".$this->email."\",\"".md5($this->motDePasse)."\",".$this->verifie.",".$this->cleMail.",\"".$this->dateInscription."\")";
         $sth = $db->prepare($req);
-    //echo $req;
+        //echo $req;
         if ($sth->execute()) {
             return true;
         } else {
