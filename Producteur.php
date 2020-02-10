@@ -54,6 +54,17 @@ class Producteur {
         }
     }
 
+    function removeFromDatabase($db) {
+        $req = "DELETE FROM producteur where prodId=".$this->id;
+
+        $sth = $db->prepare($req);
+        if ($sth->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function phoneExists($db) {
         $req = "SELECT prodTel FROM producteur where prodTel=\"".$this->phone."\"";
         $sth = $db->prepare($req);
