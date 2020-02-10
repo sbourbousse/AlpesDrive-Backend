@@ -79,6 +79,7 @@ if(!somethingMissing($email,$password,$cliPrenom,$cliNom,$cliTel,$cliAdresse,$cl
                     //TODO envoie de mail
                     if (sendVerifMail($user)) {
                         $response->setNew(true, "Ajout reussi");
+                        $responseCode = 201;
                     } else {
                         $response->setNew(false, "L'envoi du mail à échoué");
                         $errorClient = true;
