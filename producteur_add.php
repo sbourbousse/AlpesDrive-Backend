@@ -7,12 +7,15 @@ require 'Entreprise.php'; // Classe Entreprise
 
 include 'function.php';
 
-
-header("Access-Control-Allow-Origin: *");
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *"); //TODO Modifier
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header("Retry-After: 10");
 
 //Création d'une réponse
 $response = new Response;
+$responseCode = 400;
+
 
 //Connexion à la base de données
 try {
@@ -50,6 +53,7 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
     // En cas d'erreur lors d'un l'ajout, il faudra supprimer les données déjà envoyés dans la base de données
     $errorEntreprise = false;
     $errorProducteur = false;
+    $errorMail = false;
 
     // Creer des classes avec les donnée recu (User, Entreprise, Producteur)
     $user = new User($email,$password);
@@ -66,36 +70,45 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
     //Si l'email est déja pris
     if ($user->emailExists($dbh)) {
         $response->setNew(false, "Cette email est déja associé a un compte");
+        $responseCode = 409;
     } else if (!($user->isValidFields())) {
         $response->setNew(false, "Un ou plusieurs champs non valides");
+        $responseCode = 400;
     } else {
         if ($user->addToDatabase($dbh)){ //Ajout de l'utilisateur reussi
             if($entreprise->idExists($dbh)) {
                 $response->setNew(false, "Cette entreprise est déjè enregistré sur le site");
                 $errorEntreprise = true;
+                $responseCode = 409;
             } else if (!($entreprise->isValidFields())) {
                 $response->setNew(false, "Un ou plusieurs champs non valides");
                 $errorEntreprise = true;
+                $responseCode = 400;
             } else {
                 if($entreprise->addToDatabase($dbh)) { //Ajout de l'entreprise reussi
                     if($producteur->phoneExists($dbh)) {
                         $response->setNew(false, "Ce numéro de téléphone est déjà pris");
                         $errorProducteur = true;
+                        $responseCode = 409;
                     } else if (!$producteur->isValidFields()) {
-                        $response->setNew(false, "Un ou plusieurs champs non valides prod");
+                        $response->setNew(false, "Un ou plusieurs champs non valides");
                         $errorProducteur = true;
+                        $responseCode = 400;
                     } else {
                         if ($producteur->addToDatabase($dbh)) { //Ajout du producteur reussi
                             //TODO envoie de mail
                             if(sendVerifMail($user)){
                                 $response->setNew(true, "Ajout reussi");
+                                $responseCode = 201;
                             } else {
                                 $response->setNew(false, "L'envoi du mail à échoué");
-                                $errorProducteur = true;
+                                $errorMail=true;
+                                $responseCode = 500;
                             }
                         } else {
                             $response->setNew(false, "L'ajout du producteur dans la base de données a échoué");
                             $errorProducteur = true;
+                            $responseCode = 500;
                         }
                     }
 
@@ -103,14 +116,20 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
                 } else {
                     $response->setNew(false, "L'ajout de l'entreprise dans la base de données a échoué");
                     $errorEntreprise = true;
+                    $responseCode = 500;
                 }
 
             }
         } else {
             $response->setNew(false, "L'ajout de l'utilisateur dans la base de données a échoué");
+            $responseCode = 500;
         }
 
-
+    }
+    if($errorMail){
+        $producteur->removeFromDatabase($dbh);
+        $entreprise->removeFromDatabase($dbh);
+        $user->removeFromDatabase($dbh);
     }
     if($errorProducteur){
         $entreprise->removeFromDatabase($dbh);
@@ -135,16 +154,18 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
 } else {
     if ($e) {
         $response->setNew(false, "Erreur de connexion à la base de données");
+        $responseCode = 500;
+
     }
     else if (somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse,$prodVille,$prodCodePostal,$entrepriseId,$entrepriseLibelle)) {
         $response->setNew(false, "Un ou plusieurs champs n'ont pas été reçus");
+        $responseCode = 400;
     }
     else {
         $response->setNew(false, "Erreur inconnu");
+        $responseCode = 400;
     }
 }
 
+http_response_code($responseCode);
 $response->printResponseJSON();
-
-
-?>

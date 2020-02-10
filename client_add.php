@@ -7,12 +7,15 @@ require 'Entreprise.php'; // Classe Entreprise
 
 include 'function.php';
 
-
+header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header("Retry-After: 10");
+
 
 //Création d'une réponse
 $response = new Response;
+$responseCode = 400;
 
 //Connexion à la base de données
 try {
@@ -57,15 +60,19 @@ if(!somethingMissing($email,$password,$cliPrenom,$cliNom,$cliTel,$cliAdresse,$cl
     //Si l'email est déja pris
     if ($user->emailExists($dbh)) {
         $response->setNew(false, "Cette email est déja associé a un compte");
+        $responseCode = 409;
     } else if (!($user->isValidFields())) {
         $response->setNew(false, "Un ou plusieurs champs non valides");
+        $responseCode = 400;
     } else {
         if ($user->addToDatabase($dbh)) { //Ajout de l'utilisateur reussi
             if ($client->phoneExists($dbh)) {
                 $response->setNew(false, "Ce numéro de téléphone est déjà pris");
+                $responseCode = 409;
                 $errorClient = true;
             } else if (!$client->isValidFields()) {
-                $response->setNew(false, "Un ou plusieurs champs non valides cli");
+                $response->setNew(false, "Un ou plusieurs champs non valides");
+                $responseCode = 400;
                 $errorClient = true;
             } else {
                 if ($client->addToDatabase($dbh)) { //Ajout du client reussi
@@ -75,14 +82,17 @@ if(!somethingMissing($email,$password,$cliPrenom,$cliNom,$cliTel,$cliAdresse,$cl
                     } else {
                         $response->setNew(false, "L'envoi du mail à échoué");
                         $errorClient = true;
+                        $responseCode = 500;
                     }
                 } else {
                     $response->setNew(false, "L'ajout du client dans la base de données a échoué");
                     $errorClient = true;
+                    $responseCode = 500;
                 }
             }
         } else {
             $response->setNew(false, "L'ajout de l'utilisateur dans la base de données a échoué");
+            $responseCode = 500;
         }
     }
 
@@ -92,16 +102,17 @@ if(!somethingMissing($email,$password,$cliPrenom,$cliNom,$cliTel,$cliAdresse,$cl
 } else {
     if ($e) {
         $response->setNew(false, "Erreur de connexion à la base de données");
+        $responseCode = 500;
     }
     else if (somethingMissing($email,$password,$cliPrenom,$cliNom,$cliTel,$cliAdresse,$cliVille,$cliCodePostal)) {
         $response->setNew(false, "Un ou plusieurs champs n'ont pas été reçus");
+        $responseCode = 400;
     }
     else {
         $response->setNew(false, "Erreur inconnu");
+        $responseCode = 400;
     }
 }
 
+http_response_code($responseCode);
 $response->printResponseJSON();
-
-
-?>
