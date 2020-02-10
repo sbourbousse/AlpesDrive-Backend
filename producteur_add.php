@@ -86,7 +86,13 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
                         $errorProducteur = true;
                     } else {
                         if ($producteur->addToDatabase($dbh)) { //Ajout du producteur reussi
-                            $response->setNew(true, "Ajout reussi");
+                            //TODO envoie de mail
+                            if(sendVerifMail($user)){
+                                $response->setNew(true, "Ajout reussi");
+                            } else {
+                                $response->setNew(false, "L'envoi du mail à échoué");
+                                $errorProducteur = true;
+                            }
                         } else {
                             $response->setNew(false, "L'ajout du producteur dans la base de données a échoué");
                             $errorProducteur = true;
@@ -110,20 +116,20 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
         $entreprise->removeFromDatabase($dbh);
         $user->removeFromDatabase($dbh);
         //if ($entreprise->removeFromDatabase($dbh))
-            //echo 'supprimer entreprise'; //Debogage
+        //echo 'supprimer entreprise'; //Debogage
         //else
-            //echo 'Supression de l\'entreprise a echoue '; //Debogage
+        //echo 'Supression de l\'entreprise a echoue '; //Debogage
         //if ($user->removeFromDatabase($dbh))
-            //echo 'supprimer user '; //Debogage
+        //echo 'supprimer user '; //Debogage
         //else
-            //echo 'Supression de l\'utilisateur a echoue '; //Debogage
+        //echo 'Supression de l\'utilisateur a echoue '; //Debogage
     }
     if($errorEntreprise) {
         $user->removeFromDatabase($dbh);
         //if ($user->removeFromDatabase($dbh))
-            //echo 'supprimer user '; //Debogage
+        //echo 'supprimer user '; //Debogage
         //else
-            //echo 'Supression de l\'utilisateur a echoue '; //Debogage
+        //echo 'Supression de l\'utilisateur a echoue '; //Debogage
 
     }
 } else {

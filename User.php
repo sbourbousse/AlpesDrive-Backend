@@ -9,8 +9,22 @@ class User {
     private $cleMail;
     private $dateInscription;
 
+    public function __construct() {
+        $argv = func_get_args();
+        switch( func_num_args() ) {
+            case 1:
+                self::__construct1( $argv[0] );
+                break;
+            case 2:
+                self::__construct2( $argv[0], $argv[1]);
+        }
+    }
 
-    public function __construct($email, $password) {
+    function __construct1($id) {
+        $this->id = $id;
+    }
+
+    function __construct2($email, $password) {
         $this->email = $email;
         $this->motDePasse = $password;
     }
@@ -108,5 +122,44 @@ class User {
     }
     public function getId() {
         return $this->id;
+    }
+
+    public function getCleMail() {
+        return $this->cleMail;
+    }
+
+    public function getEmail() {
+        return $this->email;
+    }
+
+    public function setMailVerified($db) {
+        $req = "UPDATE utilisateur set utilisateurVerifie=1 where utilisateurId=".$this->id;
+        $sth = $db->prepare($req);
+        //echo $req;
+        if ($sth->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function checkVerification($db, $keyToVerify) {
+        $req = "SELECT utilisateurCleMail FROM utilisateur WHERE utilisateurId=".$this->id;
+        $sth = $db->prepare($req);
+        $sth->execute();
+        $result = $sth->fetch();
+
+        /*echo 'Ma requete ---->'.$req;
+        echo 'Resultat renvoyé --->'.$result["utilisateurCleMail"];
+        echo 'Cryptage du résultat renvoyé --->'.md5($result["utilisateurCleMail"]);
+        echo 'Ma clé du lien à comparer --->'.$keyToVerify; */
+
+
+        if (md5($result["utilisateurCleMail"]) == $keyToVerify) {
+            return true;
+            echo 'bon';
+        } else {
+            return false;
+        }
     }
 }

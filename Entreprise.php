@@ -62,7 +62,6 @@ class Entreprise {
             $req = "INSERT INTO entreprise (entrepriseId, entrepriseLibelle, entrepriseIBAN) VALUES ( \"".$this->id."\",\"".$this->name."\",\"".$this->iBAN."\")";
 
         $sth = $db->prepare($req);
-        //echo $req;
         if ($sth->execute()) {
             return true;
         } else {

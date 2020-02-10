@@ -31,7 +31,7 @@ class Producteur {
     }
 
     function __construct2($firstname, $lastname, $phone, $address, $city, $postCode, $entrepriseId, $userId ) {
-         $this->id = $this->id = time() - 888888;
+         $this->id = time() - 888888;
          $this->firstname = $firstname;
          $this->lastname = $lastname;
          $this->phone = $phone;
@@ -44,10 +44,9 @@ class Producteur {
     }
 
     function addToDatabase($db) {
-        $req = "INSERT INTO producteur (prodId, prodPrenom, prodNom, prodTel, prodAdresse, prodVille, prodCodePostal, entrepriseId, utilisateurId, supprime) VALUES (".$this->id.",\"".$this->firstname."\",\"".$this->lastname."\",\"".$this->phone."\",\"".$this->address."\",\"".$this->city."\",\"".$this->postCode."\",".$this->entrepriseId.",".$this->userId.",0)";
+        $req = "INSERT INTO producteur (prodId, prodPrenom, prodNom, prodTel, prodAdresse, prodVille, prodCodePostal, entrepriseId, utilisateurId, supprime) VALUES (".$this->id.",\"".$this->firstname."\",\"".$this->lastname."\",\"".$this->phone."\",\"".$this->address."\",\"".$this->city."\",\"".$this->postCode."\",\"".$this->entrepriseId."\",".$this->userId.",0)";
 
         $sth = $db->prepare($req);
-        //echo $req;
         if ($sth->execute()) {
             return true;
         } else {
