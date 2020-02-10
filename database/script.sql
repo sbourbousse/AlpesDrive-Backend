@@ -1,13 +1,21 @@
---Créé par Sylvain Bourbousse le 20/10/2019
+drop table if exists choisir ;
+drop table if exists proposer ;
 
---Supprimer la base de donnée
-drop database if exists Alpes_Drive;
-
---Créer la base de données
-create database Alpes_Drive;
-
---Acceder à la base de donnée
-use Alpes_Drive;
-
---Création des tables
-source tables.sql;
+drop table if exists panier;
+drop table if exists article;
+drop table if exists vente ;
+drop table if exists variete ;
+drop table if exists produit ;
+drop table if exists categorie ;
+drop table if exists unite ;
+drop table if exists client ;
+drop table if exists producteur ;
+drop table if exists point_relais ;
+drop table if exists point_relais_type ;
+drop table if exists horaire;
+drop table if exists jour;
+drop table if exists entreprise;
+drop table if exists localisation ;
+drop table if exists utilisateur ;
+drop table if exists cp ;
+drop table if exists parametre;

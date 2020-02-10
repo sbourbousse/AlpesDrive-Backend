@@ -15,6 +15,11 @@ load data local infile './localisation.csv' into table localisation
 	fields terminated by ';'
 	lines terminated by '\n';
 
+load data local infile './entreprise.csv' into table entreprise 
+	CHARACTER SET utf8 
+	fields terminated by ';'
+	lines terminated by '\n';
+
 load data local infile './point_relais_type.csv' into table point_relais_type 
 	CHARACTER SET utf8 
 	fields terminated by ';'
