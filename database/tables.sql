@@ -49,7 +49,7 @@ CREATE TABLE `horaire` (
 
 CREATE TABLE `point_relais_type` (
                                      `pointRelaisTypeId` smallint PRIMARY KEY,
-                                     `pointRelaisLibelle` varchar(64)
+                                     `pointRelaisTypeLibelle` varchar(64)
 );
 
 CREATE TABLE `point_relais` (
