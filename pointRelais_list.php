@@ -20,7 +20,7 @@ try {
     $response->setDb(false, "La connexion à la base de données a échouée :  ". $e->getMessage());
 }
 
-$req = "SELECT pointRelaisId from point_relais";
+$req = "select pointRelaisId, pointRelaisAdresse, pointRelaisVille, pointRelaisCodePostal, pointRelaisTypeLibelle from point_relais inner join point_relais_type on point_relais.pointRelaisTypeId=point_relais_type.pointRelaisTypeId";
 //echo $req;
 $sth = $dbh->prepare($req);
 if($sth->execute()) {
