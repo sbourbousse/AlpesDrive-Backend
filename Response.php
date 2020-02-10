@@ -22,6 +22,10 @@ class Response {
         $this->response['db']['message'] = $message;
     }
 
+    function setData($tab) {
+        $this->response["data"] = $tab;
+    }
+
     function getResponse(){
         return $this->response;
     }
@@ -30,5 +34,3 @@ class Response {
         echo json_encode($this->response);
     }
 }
-
-?>

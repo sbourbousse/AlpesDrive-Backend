@@ -123,4 +123,10 @@ class PointRelais {
         return $valid;
     }
 
+    function getPublicInfo(){
+        $tabInfo["id"] = $this->id;
+        $tabInfo["address"] = $this->address;
+        $tabInfo["city"] = $this->city;
+        $tabInfo["postCode"] = $this->postCode;
+    }
 }
