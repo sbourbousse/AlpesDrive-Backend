@@ -170,5 +170,5 @@ if(!somethingMissing($email,$password,$pointRelaisPrenom,$pointRelaisNom,$pointR
     }
 }
 
-http_response_code($responseCode);
+//http_response_code($responseCode);
 $response->printResponseJSON();

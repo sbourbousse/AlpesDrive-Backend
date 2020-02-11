@@ -16,7 +16,6 @@ header("Retry-After: 10");
 $response = new Response;
 $responseCode = 400;
 
-
 //Connexion à la base de données
 try {
     $dbh = new Database;
@@ -167,5 +166,5 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
     }
 }
 
-http_response_code($responseCode);
+//http_response_code($responseCode);
 $response->printResponseJSON();
