@@ -98,6 +98,76 @@ class User {
             return false;
     }
 
+    function getAuthData($db){
+        // Récuperer l'id avec le mail
+        $req = "SELECT utilisateurId from utilisateur where utilisateurMail=\"".$this->email."\"";
+        $sth = $db->prepare($req);
+        $sth->execute();
+        $result = $sth->fetch();
+        $userId = $result["utilisateurId"];
+
+        // Requete informations producteur
+        $reqProd = "SELECT utilisateur.utilisateurMail, producteur.utilisateurId, producteur.prodId, prodPrenom, prodNom
+        FROM utilisateur inner join producteur on producteur.utilisateurId=utilisateur.utilisateurId 
+        WHERE utilisateur.utilisateurId=".$userId;
+        $sth = $db->prepare($reqProd);
+        $sth->execute();
+        $resultProd = $sth->fetch();
+        if($resultProd) {
+            $prodId = $resultProd["prodId"];
+            // Requete liste point Relais
+            $reqProdPointRelais = "SELECT proposer.pointRelaisId 
+            FROM producteur inner join proposer on proposer.prodId=producteur.prodId 
+            WHERE producteur.prodId=".$prodId;
+            $sth = $db->prepare($reqProdPointRelais);
+            $sth->execute();
+            $resultProdPointRelais = $sth->fetchAll();
+            $tab["userType"] = "producteur";
+            $tab += $resultProd;
+            $tab["pointRelais"] =  $resultProdPointRelais;
+        } else {
+            //Requete informations point_relais
+            $reqPointRelais = "SELECT utilisateurMail, point_relais.utilisateurId, point_relais.pointRelaisId, point_relais.pointRelaisPrenomGerant, point_relais.pointRelaisNomGerant 
+            FROM utilisateur inner join point_relais on point_relais.utilisateurId=utilisateur.utilisateurId 
+            WHERE utilisateur.utilisateurId=".$userId;
+            $sth = $db->prepare($reqPointRelais);
+            $sth->execute();
+            $resultPointRelais = $sth->fetch();
+            if($resultPointRelais) {
+                $tab["userType"] = "point_relais";
+                $tab += $resultPointRelais;
+            } else {
+                //Requete vérification client
+                $reqClient = "SELECT client.utilisateurId, clientId, clientPrenom , clientNom
+                FROM utilisateur inner join client on client.utilisateurId=utilisateur.utilisateurId 
+                WHERE utilisateur.utilisateurId=".$userId;
+                $sth = $db->prepare($reqClient);
+                $sth->execute();
+                $resultClient = $sth->fetch();
+                if($resultClient) {
+                    $clientId = $resultClient["prodId"];
+                    // Requete liste point Relais
+                    $reqCliPointRelais = "SELECT proposer.pointRelaisId 
+                    FROM producteur inner join proposer on proposer.prodId=producteur.prodId 
+                    WHERE producteur.prodId=".$clientId;
+                    $sth = $db->prepare($reqCliPointRelais);
+                    $sth->execute();
+                    $resultCliPointRelais = $sth->fetchAll();
+                    $tab["userType"] = "client";
+                    $tab += $resultClient;
+                    $tab["pointRelais"] =  $resultCliPointRelais;
+                } else {
+                    // Some error
+                }
+            }
+        }
+        return $tab;
+
+
+
+
+    }
+
     public function addToDatabase($db) {
         $req = "INSERT INTO utilisateur (utilisateurId, utilisateurMail, utilisateurMotDePasse, utilisateurVerifie, utilisateurcleMail, utilisateurDateInscription) VALUES ( ".$this->id.",\"".$this->email."\",\"".md5($this->motDePasse)."\",".$this->verifie.",".$this->cleMail.",\"".$this->dateInscription."\")";
         $sth = $db->prepare($req);

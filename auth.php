@@ -34,9 +34,10 @@ if(!somethingMissing($email,$password) && !$e){
 
     $user = new User($email,$password);
 
-
     if($user->auth($dbh) == 1){
+
         $response->setAuth(true, "Connexion réussie");
+        $response->setData($user->getAuthData($dbh));
     } else if ($user->auth($dbh) == 2) {
         $response->setAuth(false, "Votre compte n'a pas été vérifié, veuillez consulter votre boite mail");
     } else if ($user->auth($dbh) == 3) {
