@@ -5,4 +5,5 @@ class Produit {
     private $id;
     private $libelle;
     private $image;
+    private $unite;
 }
