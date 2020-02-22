@@ -134,8 +134,17 @@ class User {
             $sth->execute();
             $resultPointRelais = $sth->fetch();
             if($resultPointRelais) {
+                $pointRelaisId = $resultPointRelais["pointRelaisId"];
+                // Requete liste producteur
+                $reqPointRelaisProducteur = "SELECT prodId 
+                    FROM proposer
+                    WHERE pointRelaisId=".$pointRelaisId;
+                $sth = $db->prepare($reqPointRelaisProducteur);
+                $sth->execute();
+                $resultPointRelaisProducteur = $sth->fetchAll();
                 $tab["userType"] = "point_relais";
                 $tab += $resultPointRelais;
+                $tab["producteur"] =  $resultPointRelaisProducteur;
             } else {
                 //Requete vérification client
                 $reqClient = "SELECT client.utilisateurId, clientId, clientPrenom , clientNom
@@ -145,11 +154,11 @@ class User {
                 $sth->execute();
                 $resultClient = $sth->fetch();
                 if($resultClient) {
-                    $clientId = $resultClient["prodId"];
+                    $clientId = $resultClient["clientId"];
                     // Requete liste point Relais
-                    $reqCliPointRelais = "SELECT proposer.pointRelaisId 
-                    FROM producteur inner join proposer on proposer.prodId=producteur.prodId 
-                    WHERE producteur.prodId=".$clientId;
+                    $reqCliPointRelais = "SELECT pointRelaisId 
+                    FROM choisir 
+                    WHERE clientId=".$clientId;
                     $sth = $db->prepare($reqCliPointRelais);
                     $sth->execute();
                     $resultCliPointRelais = $sth->fetchAll();
