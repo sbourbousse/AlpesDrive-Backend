@@ -25,6 +25,11 @@ if (isset($_GET["id"]) && isset($_GET["userType"]) && $_GET["userType"] == "prod
             from point_relais inner join point_relais_type on point_relais.pointRelaisTypeId=point_relais_type.pointRelaisTypeId inner join entreprise on  point_relais.entrepriseId=entreprise.entrepriseId
                 inner join proposer on proposer.pointRelaisId=point_relais.pointRelaisId 
             where proposer.prodId=".$_GET["id"];
+} else if (isset($_GET["id"]) && isset($_GET["userType"]) && $_GET["userType"] == "client") {
+    $req = "select point_relais.pointRelaisId, pointRelaisAdresse, pointRelaisVille, pointRelaisCodePostal, pointRelaisTypeLibelle, entrepriseLibelle 
+            from point_relais inner join point_relais_type on point_relais.pointRelaisTypeId=point_relais_type.pointRelaisTypeId inner join entreprise on  point_relais.entrepriseId=entreprise.entrepriseId
+                inner join choisir on choisir.pointRelaisId=point_relais.pointRelaisId 
+            where choisir.clientId=".$_GET["id"];
 } else {
     $req = "select pointRelaisId, pointRelaisAdresse, pointRelaisVille, pointRelaisCodePostal, pointRelaisTypeLibelle, entrepriseLibelle from point_relais inner join point_relais_type on point_relais.pointRelaisTypeId=point_relais_type.pointRelaisTypeId inner join entreprise on  point_relais.entrepriseId=entreprise.entrepriseId";
 }

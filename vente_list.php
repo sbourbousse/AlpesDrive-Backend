@@ -20,10 +20,17 @@ try {
     $response->setDb(false, "La connexion à la base de données a échouée :  ". $e->getMessage());
 }
 
-if (isset($_GET["id"]) && isset($_GET["userType"]) && $_GET["userType"] == "producteur"){
-    $req = "SELECT venteId, prix, quantite, dateAjout, dateLimiteVente, valide, prodId, varieteId from vente where prodId=".$_GET["id"];
+if (isset($_GET["id"])) {
+    $req = "SELECT venteId, prix, quantite, dateAjout, dateLimiteVente, valide, prodId, varieteLibelle, produitLibelle, produitImage, categorieLibelle, uniteLettre 
+    from vente inner join variete on vente.varieteId=variete.varieteId inner join produit on variete.produitId=produit.produitId
+        inner join categorie on produit.categorieId=categorie.categorieId inner join unite on produit.uniteId=unite.uniteId 
+    where prodId=".$_GET["id"]." 
+    order by dateAjout";
 } else {
-    $req = "SELECT venteId, prix, quantite, dateAjout, dateLimiteVente, valide, prodId, varieteId from vente";
+    $req = "SELECT venteId, prix, quantite, dateAjout, dateLimiteVente, valide, prodId, varieteLibelle, produitLibelle, produitImage, categorieLibelle, uniteLettre 
+from vente inner join variete on vente.varieteId=variete.varieteId inner join produit on variete.produitId=produit.produitId
+    inner join categorie on produit.categorieId=categorie.categorieId inner join unite on produit.uniteId=unite.uniteId 
+    order by dateAjout";
 }
 //echo $req;
 $sth = $dbh->prepare($req);

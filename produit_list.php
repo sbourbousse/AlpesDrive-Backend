@@ -21,10 +21,12 @@ try {
 }
 
 if (isset ($_GET["catId"])) {
-    $req = "SELECT produitId, produitLibelle, produitImage FROM produit WHERE categorieId=".$_GET["catId"];
+    $req = "SELECT produitId, produitLibelle, produitImage, unite.uniteId, uniteLibelle, uniteLettre, uniteQuantiteVente 
+            FROM produit inner join unite on produit.uniteId = unite.uniteId 
+            WHERE categorieId=".$_GET["catId"];
 } else {
-    $req = "SELECT produitId, produitLibelle, produitImage FROM produit";
-
+    $req = "SELECT produitId, produitLibelle, produitImage, unite.uniteId, uniteLibelle, uniteLettre, uniteQuantiteVente 
+            FROM produit inner join unite on produit.uniteId = unite.uniteId";
 }
 //echo $req;
 $sth = $dbh->prepare($req);
