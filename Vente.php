@@ -48,8 +48,5 @@ VALUES ( ".$this->id.", ".$this->prix.", ".$this->quantite.", \"".$this->dateAjo
         } else {
             return false;
         }
-
     }
-
-
 }
