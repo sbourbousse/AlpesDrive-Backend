@@ -33,7 +33,7 @@ class Vente {
 
     public function generate() {
         $this->id = time() - 999999;
-        $this->dateAjout = $date = date('Y-m-d h:i:s', time());
+        $this->dateAjout = date('Y-m-d h:i:s', time());
         $this->valide = 0;
     }
 
