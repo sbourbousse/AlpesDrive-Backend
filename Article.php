@@ -32,7 +32,6 @@ class Article
             $this->panierId = $result['panierId'];
             return true;
         } else { //Si aucun panier existe
-            echo "création panier";
 
             $idPanier = time() - 11111;
             //Creer un nouveau panier
