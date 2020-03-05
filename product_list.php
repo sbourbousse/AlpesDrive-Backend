@@ -23,12 +23,22 @@ try {
 
 if(isset($_GET['id']) && isset($_GET['userType']) && $_GET['userType'] == "client") {
 
-    $req = "select venteId, prix, quantite, dateAjout, dateLimiteVente, prodPrenom, prodNom, uniteLibelle, varieteLibelle, produitLibelle, produitImage, categorieLibelle, count(*) as nbPointRelaisProposant from vente inner join producteur on vente.prodId=producteur.prodId
- inner join proposer p on producteur.prodId = p.prodId inner join point_relais pr on p.pointRelaisId = pr.pointRelaisId
- inner join choisir c on pr.pointRelaisId = c.pointRelaisId inner join variete on vente.varieteId = variete.varieteId inner join 
- produit on variete.produitId=produit.produitId inner join categorie on produit.categorieId=categorie.categorieId 
- inner join unite on produit.uniteId=unite.uniteId where c.clientId=".$_GET["id"]." and valide=1 group by venteId 
- order by dateAjout desc";
+    $req = "select vente.venteId, prix, vente.quantite, dateAjout, dateLimiteVente, prodPrenom, prodNom, uniteLibelle, varieteLibelle, produitLibelle, produitImage, categorieLibelle, count(*) as nbPointRelaisProposant
+            from vente
+                inner join producteur on vente.prodId=producteur.prodId
+                inner join proposer p on producteur.prodId = p.prodId
+                inner join point_relais pr on p.pointRelaisId = pr.pointRelaisId
+                inner join choisir c on pr.pointRelaisId = c.pointRelaisId
+                inner join variete on vente.varieteId = variete.varieteId
+                inner join produit on variete.produitId=produit.produitId
+                inner join categorie on produit.categorieId=categorie.categorieId
+                inner join unite on produit.uniteId=unite.uniteId
+            WHERE c.clientId=".$_GET["id"]."
+                and valide=1
+                and vente.venteId not in (SELECT venteId
+                            FROM article)
+            GROUP BY vente.venteId
+            ORDER BY dateAjout desc";
     $sth = $dbh->prepare($req);
     if ($sth->execute()) {
         $result = $sth->fetchAll();
