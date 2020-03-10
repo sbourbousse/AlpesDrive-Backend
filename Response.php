@@ -26,6 +26,15 @@ class Response {
         $this->response["data"] = $tab;
     }
 
+    function setDelete($status, $message) {
+        $this->response['delete']['status'] = $status;
+        $this->response['delete']['message'] = $message;
+    }
+
+    function setUpdate($status, $message) {
+        $this->response['update']['status'] = $status;
+        $this->response['update']['message'] = $message;
+    }
     function getResponse(){
         return $this->response;
     }
