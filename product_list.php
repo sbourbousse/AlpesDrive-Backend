@@ -6,9 +6,7 @@ require 'Response.php';
 
 include 'function.php';
 
-header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: *"); //TODO Modifier
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+include_once "headers.php";
 
 //Création d'une réponse
 $response = new Response;

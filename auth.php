@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'Database.php'; // Classe Database
 require 'Response.php'; // Classe Response
 require 'User.php'; // Classe Response
@@ -6,8 +7,7 @@ require 'User.php'; // Classe Response
 include 'function.php';
 
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+include_once "headers.php";
 
 //Création d'un réponse
 $response = new Response;
@@ -38,6 +38,7 @@ if(!somethingMissing($email,$password) && !$e){
 
         $response->setAuth(true, "Connexion réussie");
         $response->setData($user->getAuthData($dbh));
+        $_SESSION["id"] = $user->getId();
     } else if ($user->auth($dbh) == 2) {
         $response->setAuth(false, "Votre compte n'a pas été vérifié, veuillez consulter votre boite mail");
     } else if ($user->auth($dbh) == 3) {

@@ -5,10 +5,7 @@ require 'Vente.php'; // Classe Vente
 
 include 'function.php';
 
-header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-header("Retry-After: 10");
+include_once "headers.php";
 
 
 //Création d'une réponse
