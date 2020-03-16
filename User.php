@@ -202,7 +202,12 @@ class User {
     public function getId() {
         return $this->id;
     }
-
+    public function getIdFromDatabase($db) {
+        $req = "SELECT utilisateurId FROM utilisateur WHERE utilisateurMail=\"".$this->email."\"";
+        $sth = $db->prepare($req);
+        $res = $sth->execute();
+        return $res["utilisateurId"];
+    }
     public function getCleMail() {
         return $this->cleMail;
     }

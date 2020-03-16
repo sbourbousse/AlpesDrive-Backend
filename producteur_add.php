@@ -95,7 +95,6 @@ if(!somethingMissing($email,$password,$prodPrenom,$prodNom,$prodTel,$prodAdresse
                         $responseCode = 400;
                     } else {
                         if ($producteur->addToDatabase($dbh)) { //Ajout du producteur reussi
-                            //TODO envoie de mail
                             if(sendVerifMail($user)){
                                 $response->setNew(true, "Ajout reussi");
                                 $responseCode = 201;

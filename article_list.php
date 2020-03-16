@@ -23,7 +23,12 @@ try {
 
 if (isset($_GET["id"])) {
     $tab = [];
-    $req="SELECT venteId from article where clientId=".$_GET['id'];
+    $req="SELECT venteId
+          FROM article 
+            inner join panier on article.panierId=panier.panierId 
+          WHERE clientId=".$_GET['id']." 
+            AND panierRegle=0";
+    //echo $req;
     $sth = $dbh->prepare($req);
     $sth->execute();
     $resArticleId = $sth->fetchAll();
